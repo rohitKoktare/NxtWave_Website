@@ -1,4 +1,6 @@
 import {Component} from 'react'
+import Cookies from 'js-cookie'
+import {Redirect} from 'react-router-dom'
 
 import './index.css'
 
@@ -6,6 +8,37 @@ class LoginForm extends Component {
   state = {
     username: '',
     password: '',
+    errorState: false,
+    errorMsg: '',
+  }
+
+  onSuccess = jwtToken => {
+    const {history} = this.props
+    history.replace('/')
+    Cookies.set('jwtToken', jwtToken, {expires: 30})
+  }
+
+  onFailure = errorMsg => {
+    console.log(errorMsg)
+    this.setState({errorState: true, errorMsg})
+  }
+
+  onSubmitButton = async event => {
+    event.preventDefault()
+    const {username, password} = this.state
+    const userDetails = {username, password}
+    const url = 'https://apis.ccbp.in/login'
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(userDetails),
+    }
+    const responseFetch = await fetch(url, options)
+    const responseData = await responseFetch.json()
+    if (responseFetch.ok) {
+      this.onSuccess(responseData.jwt_token)
+    } else {
+      this.onFailure(responseData.error_msg)
+    }
   }
 
   onChangeUsername = event => {
@@ -53,6 +86,11 @@ class LoginForm extends Component {
   }
 
   render() {
+    const {errorState, errorMsg} = this.state
+    const jwtToken = Cookies.get('jwtToken')
+    if (jwtToken !== undefined) {
+      return <Redirect to="/" />
+    }
     return (
       <div className="login-form-container">
         <img
@@ -65,7 +103,7 @@ class LoginForm extends Component {
           className="login-image"
           alt="website login"
         />
-        <form className="form-container">
+        <form className="form-container" onSubmit={this.onSubmitButton}>
           <img
             src="https://assets.ccbp.in/frontend/react-js/nxt-trendz-logo-img.png"
             className="login-website-logo-desktop-image"
@@ -76,6 +114,7 @@ class LoginForm extends Component {
           <button type="submit" className="login-button">
             Login
           </button>
+          {errorState && <p className="error-message">*{errorMsg}</p>}
         </form>
       </div>
     )
