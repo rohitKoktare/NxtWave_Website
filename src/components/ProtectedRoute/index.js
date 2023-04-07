@@ -9,7 +9,7 @@ const ProtectedRoute = props => {
   }
 
   // eslint-disable-next-line react/jsx-props-no-spreading
-  return <Route {...props}
+  return <Route {...props} />
 }
 
 export default ProtectedRoute
