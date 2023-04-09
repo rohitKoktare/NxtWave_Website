@@ -1,3 +1,4 @@
-const thisisnew=(){
+const thisisnew=()={
     console.log('trial')
+
 }
