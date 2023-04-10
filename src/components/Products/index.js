@@ -1,12 +1,14 @@
+import AllProductsSection from '../AllProductsSection'
+
 import Header from '../Header'
-import AllProductSection from '../AllProductSections'
+
 import './index.css'
 
 const Products = () => (
   <>
     <Header />
-    <div className="products-container">
-      <AllProductSection />
+    <div className="product-sections">
+      <AllProductsSection />
     </div>
   </>
 )
